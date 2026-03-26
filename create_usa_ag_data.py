@@ -14,7 +14,7 @@ COMMODITIES = [
     "Eggs", "Milk", "Cheese", "Butter", "Beef", "Pork", "Mutton",
     "Poultry", "Wine", "Tomatoes", "Oranges", "Grains", "Meat", "Rice",
 ]
-HEADERS = ["Year"] + COMMODITIES
+HEADERS = ["Year"] + COMMODITIES + ["Source"]
 
 # ---------------------------------------------------------------------------
 # SHEET 1 – FARMERS_PRICE
@@ -302,6 +302,7 @@ def build_price_rows():
     ))
     rows = []
     for y in years:
+        src = "USDA/NASS Prices Received by Farmers; HSUS Series K491-510"
         rows.append([
             y,
             wheat_price.get(y),
@@ -325,6 +326,7 @@ def build_price_rows():
             None,  # Grains aggregate – not tracked
             None,  # Meat aggregate – not tracked
             rice_price.get(y),
+            src,
         ])
     return rows
 
@@ -656,9 +658,16 @@ def build_prod_rows():
         meat_vals = [bec, pkc, muc, plc]
         meat = _r(sum(v for v in meat_vals if v is not None)) if any(v is not None for v in meat_vals) else None
 
+        # Source attribution
+        census_years = {1839, 1849, 1859}
+        if y in census_years:
+            src = "US Agricultural Census; HSUS Series K1-75"
+        else:
+            src = "USDA/NASS; HSUS Series K1-75, K507-522; USDA Agricultural Statistics"
+
         rows.append([
             y, wc, ryc, bac, oac, coc, poc, suc, egc, mic, chc, buc,
-            bec, pkc, muc, plc, None, toc, orc, grains, meat, ric
+            bec, pkc, muc, plc, None, toc, orc, grains, meat, ric, src
         ])
     return rows
 
@@ -955,6 +964,7 @@ def build_imp_qty_rows():
             grains,                     # Grains aggregate
             meat,                       # Meat aggregate
             rice_imp_qty.get(y),        # Rice
+            "HSUS Series U (Trade); USDA/FAS; US Bureau of Statistics",
         ])
     return rows
 
@@ -1126,6 +1136,7 @@ def build_imp_val_rows():
             None,   # Grains aggregate (value) - not summed here
             None,   # Meat aggregate (value) - not summed here
             ri_v,   # Rice
+            "HSUS Series U; USDA/FAS; estimated from quantity × price",
         ])
     return rows
 
@@ -1486,7 +1497,8 @@ def build_exp_qty_rows():
 
         rows.append([
             y, wqc, ryqc, baqc, oaqc, cqc, poqc, suqc, egqc, miqc, chqc, buqc,
-            bqc, pqc, muqc, plqc, wiqc, toqc, orqc, grains, meat, riqc
+            bqc, pqc, muqc, plqc, wiqc, toqc, orqc, grains, meat, riqc,
+            "HSUS Series U (Trade); USDA/FAS; US Bureau of Statistics",
         ])
     return rows
 
@@ -1607,7 +1619,8 @@ def build_exp_val_rows():
 
         rows.append([
             y, wv, ryv, bav, oav, cv, pov, suv, egv, miv, chv, buv,
-            bv, pv, muv, plv, wiv, tov, orv, None, None, riv
+            bv, pv, muv, plv, wiv, tov, orv, None, None, riv,
+            "HSUS Series U; USDA/FAS; estimated from quantity × farm price",
         ])
     return rows
 
@@ -1640,6 +1653,7 @@ def write_sheet(ws, title_text, unit_text, source_text, data_rows):
     ws.column_dimensions["A"].width = 8
     for col_letter in "BCDEFGHIJKLMNOPQRSTUV":
         ws.column_dimensions[col_letter].width = 11
+    ws.column_dimensions["W"].width = 55  # Source column
     ws.row_dimensions[2].height = 30
     ws.row_dimensions[3].height = 30
     ws.cell(row=2, column=1).alignment = wrap
