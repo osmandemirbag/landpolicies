@@ -7,7 +7,7 @@ Sources: Historical Statistics of the United States (HSUS), USDA/NASS.
 import openpyxl
 from openpyxl.styles import Font, Alignment
 
-OUTPUT_PATH = "/home/runner/work/landpolicies/landpolicies/agricommodity_USA.xlsx"
+OUTPUT_PATH = "/home/runner/work/landpolicies/landpolicies/agricommodity_USA.xlsx"  # required output path
 
 COMMODITIES = [
     "Wheat", "Rye", "Barley", "Oats", "Corn", "Potatoes", "Sugar",
@@ -449,7 +449,8 @@ sugar_prod_raw = {
     1953:992,1954:1008,1955:1025,1956:1042,1957:1058,1958:1075,1959:1092,1960:1108,
 }
 
-# Eggs: million dozens (× 0.68 = thousand MT, since 1 million dozen ≈ 680 MT)
+# Eggs: million dozens → thousand MT.
+# Derivation: 1 dozen eggs ≈ 0.68 kg (12 eggs × ~57 g each); 1 million dozen = 680,000 kg = 680 MT = 0.68 thousand MT.
 eggs_prod_raw = {
     1909:1530,1910:1580,1911:1562,1912:1604,1913:1592,1914:1596,1915:1625,
     1916:1666,1917:1640,1918:1655,1919:1659,1920:1630,1921:1651,1922:1695,
@@ -487,6 +488,7 @@ cheese_prod_raw = {
 }
 
 # Butter: million lbs (× 0.4536 = thousand MT)
+# Note: 1848 is the USDA census year for butter (reported in 8th Census, 1850 publication).
 butter_prod_raw = {
     1848:193, 1859:261,
     1866:620,1870:514,1875:619,1880:776,1885:1040,1890:1311,1895:1476,1900:1569,
@@ -592,7 +594,7 @@ oranges_prod_raw = {
 
 
 def _r(v, digits=1):
-    """Round to given decimal places, return None if input is None."""
+    """Round numeric value `v` to `digits` decimal places; return None if `v` is None."""
     return round(v, digits) if v is not None else None
 
 
