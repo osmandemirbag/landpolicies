@@ -971,33 +971,43 @@ def build_imp_qty_rows():
 
 # ---------------------------------------------------------------------------
 # SHEET 4 – IMPORT_VALUES  (thousand USD)
-# Raw sugar wholesale price at New York ($/short ton, approximately):
-# Used to estimate import value = quantity × price
+# Actual import values from HSUS Series U 94-115 (million $, converted below).
+# These are recorded trade values, NOT estimates from quantity × price.
 # ---------------------------------------------------------------------------
-# Average raw sugar import price ($/short ton) – approximate from HSUS series
-sugar_imp_price_per_ston = {
-    1821:42,1822:41,1823:38,1824:37,1825:35,1826:34,1827:33,1828:32,1829:31,
-    1830:30,1831:28,1832:27,1833:28,1834:27,1835:28,1836:30,1837:32,1838:28,
-    1839:29,1840:28,1841:26,1842:22,1843:20,1844:21,1845:22,1846:22,1847:24,
-    1848:22,1849:20,1850:22,1851:24,1852:24,1853:26,1854:28,1855:30,1856:32,
-    1857:34,1858:30,1859:32,1860:34,1861:32,1862:38,1863:42,1864:52,1865:48,
-    1866:44,1867:42,1868:40,1869:38,1870:36,1871:36,1872:38,1873:40,1874:36,
-    1875:32,1876:28,1877:26,1878:24,1879:22,1880:24,1881:26,1882:28,1883:28,
-    1884:26,1885:22,1886:20,1887:20,1888:20,1889:18,1890:18,1891:18,1892:18,
-    1893:18,1894:16,1895:14,1896:14,1897:14,1898:14,1899:16,1900:18,1901:18,
-    1902:18,1903:18,1904:18,1905:18,1906:18,1907:18,1908:18,1909:20,1910:22,
-    1911:22,1912:24,1913:24,1914:22,1915:22,1916:30,1917:50,1918:60,1919:80,
-    1920:120,1921:40,1922:36,1923:60,1924:50,1925:50,1926:48,1927:46,1928:44,
-    1929:42,1930:34,1931:26,1932:20,1933:24,1934:28,1935:26,1936:26,1937:28,
-    1938:26,1939:24,1940:24,1941:26,1942:28,1943:30,1944:30,1945:32,1946:40,
-    1947:60,1948:70,1949:60,1950:80,1951:100,1952:90,1953:85,1954:85,1955:80,
-    1956:80,1957:80,1958:80,1959:80,1960:80,
+
+# Actual sugar import values (million $) – HSUS Series U 100
+# Source: Historical Statistics of the United States, Colonial Times to 1957,
+#         Series U 94-115 "Imports of Selected Products: 1790 to 1957"
+sugar_imp_val_mil = {
+    1836:13,1837:7,1838:8,1839:10,1840:6,1841:9,1842:6,1843:2,1844:7,
+    1845:6,1846:6,1847:10,1848:9,1849:8,1850:8,1851:13,1852:15,1853:15,
+    1854:14,1855:15,1856:24,1857:48,1858:23,1859:31,1860:31,1861:31,
+    1862:20,1863:19,1864:30,1865:27,1866:41,1867:36,1868:49,1869:60,
+    1870:57,1871:66,1872:81,1873:83,1874:82,1875:73,1876:68,1877:85,
+    1878:73,1879:72,1880:80,1881:87,1882:90,1883:92,1884:98,1885:78,
+    1886:81,1887:78,1888:74,1889:89,1890:96,1891:106,1892:104,1893:115,
+    1894:125,1895:75,1896:84,1897:94,1898:58,1899:93,1900:100,1901:88,
+    1902:53,1903:71,1904:71,1905:97,1906:86,1907:93,1908:80,1909:96,
+    1910:102,1911:90,1912:104,1913:99,1914:99,1915:166,1916:227,1917:222,
+    1918:241,1919:393,1920:1116,1921:235,1922:252,1923:380,1924:364,
+    1925:246,1926:233,1927:258,1928:207,1929:209,1930:130,1931:118,
+    1932:97,1933:106,1934:118,1935:133,1936:168,1937:166,1938:130,
+    1939:125,1940:113,1941:117,1942:107,1943:184,1944:212,1945:202,
+    1946:196,1947:411,1948:313,1949:372,1950:380,1951:387,1952:415,
+    1953:426,1954:409,1955:414,1956:437,1957:458,
 }
 
 
 def build_imp_val_rows():
+    """Build import value rows using actual recorded trade values from HSUS.
+
+    Values come from HSUS Series U 94-115 where available.
+    Commodities not covered by HSUS aggregate trade tables are set to None
+    (actual commodity-level import values require detailed Foreign Commerce
+    and Navigation reports not yet digitised).
+    """
     all_years = sorted(set(
-        list(sugar_imp_qty_raw) + list(wheat_imp_qty) + list(rice_imp_qty) +
+        list(sugar_imp_val_mil) + list(wheat_imp_qty) + list(rice_imp_qty) +
         list(wine_imp_qty) + list(cheese_imp_qty) + list(rye_imp_qty) +
         list(barley_imp_qty) + list(oats_imp_qty) + list(corn_imp_qty) +
         list(potatoes_imp_qty) + list(eggs_imp_qty) + list(milk_imp_qty) +
@@ -1007,136 +1017,36 @@ def build_imp_val_rows():
     ))
     rows = []
     for y in all_years:
-        # Sugar import value: qty (thousand short tons) × price ($/short ton) × 1000 = thousand USD
-        su_q = sugar_imp_qty_raw.get(y)
-        su_p = sugar_imp_price_per_ston.get(y)
-        su_v = _r(su_q * su_p, 0) if (su_q is not None and su_p is not None) else None
+        # Sugar import value: actual recorded value from HSUS U100 (million $ → thousand $)
+        su_raw = sugar_imp_val_mil.get(y)
+        su_v = _r(su_raw * 1000, 0) if su_raw is not None else None
 
-        # Wheat import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.027215
-        wh_q = wheat_imp_qty.get(y)
-        wh_p = wheat_price.get(y)
-        wh_v = _r(wh_q * (wh_p / 100) / 0.027215, 0) if (wh_q is not None and wh_p is not None) else None
-
-        # Rye import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.025401
-        ry_q = rye_imp_qty.get(y)
-        ry_p = rye_price.get(y)
-        ry_v = _r(ry_q * (ry_p / 100) / 0.025401, 0) if (ry_q is not None and ry_p is not None) else None
-
-        # Barley import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.021772
-        ba_q = barley_imp_qty.get(y)
-        ba_p = barley_price.get(y)
-        ba_v = _r(ba_q * (ba_p / 100) / 0.021772, 0) if (ba_q is not None and ba_p is not None) else None
-
-        # Oats import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.014515
-        oa_q = oats_imp_qty.get(y)
-        oa_p = oats_price.get(y)
-        oa_v = _r(oa_q * (oa_p / 100) / 0.014515, 0) if (oa_q is not None and oa_p is not None) else None
-
-        # Corn import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.025401
-        co_q = corn_imp_qty.get(y)
-        co_p = corn_price.get(y)
-        co_v = _r(co_q * (co_p / 100) / 0.025401, 0) if (co_q is not None and co_p is not None) else None
-
-        # Potatoes import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.027216
-        po_q = potatoes_imp_qty.get(y)
-        po_p = potatoes_price.get(y)
-        po_v = _r(po_q * (po_p / 100) / 0.027216, 0) if (po_q is not None and po_p is not None) else None
-
-        # Eggs import value: qty (thousand MT) × price per MT; eggs price cents/doz, 1 doz ~ 0.68 kg
-        # price $/MT = (cents/doz / 100) / 0.00068
-        eg_q = eggs_imp_qty.get(y)
-        eg_p = eggs_price.get(y)
-        eg_v = _r(eg_q * (eg_p / 100) / 0.00068, 0) if (eg_q is not None and eg_p is not None) else None
-
-        # Milk import value: qty (thousand MT) × price per MT; milk price $/cwt
-        # price $/MT = $/cwt × 100 / 45.359
-        mi_q = milk_imp_qty.get(y)
-        mi_p = milk_price.get(y)
-        mi_v = _r(mi_q * mi_p * 100 / 45.359, 0) if (mi_q is not None and mi_p is not None) else None
-
-        # Cheese import value: qty (thousand MT) × price per MT; cheese price cents/lb
-        # price $/MT = (cents/lb / 100) × 2204.622
-        ch_q = cheese_imp_qty.get(y)
-        ch_p = cheese_price.get(y)
-        ch_v = _r(ch_q * (ch_p / 100) * 2204.622, 0) if (ch_q is not None and ch_p is not None) else None
-
-        # Butter import value: qty (thousand MT) × price per MT; butter price cents/lb
-        # price $/MT = (cents/lb / 100) × 2204.622
-        bu_q = butter_imp_qty.get(y)
-        bu_p = butter_price.get(y)
-        bu_v = _r(bu_q * (bu_p / 100) * 2204.622, 0) if (bu_q is not None and bu_p is not None) else None
-
-        # Beef import value: qty (thousand MT) × price per MT; beef price $/cwt
-        # price $/MT = $/cwt × 100 / 45.359
-        be_q = beef_imp_qty.get(y)
-        be_p = beef_price.get(y)
-        be_v = _r(be_q * be_p * 100 / 45.359, 0) if (be_q is not None and be_p is not None) else None
-
-        # Pork import value: qty (thousand MT) × price per MT; pork price $/cwt
-        # price $/MT = $/cwt × 100 / 45.359
-        pk_q = pork_imp_qty.get(y)
-        pk_p = pork_price.get(y)
-        pk_v = _r(pk_q * pk_p * 100 / 45.359, 0) if (pk_q is not None and pk_p is not None) else None
-
-        # Mutton import value: qty (thousand MT) × price per MT; mutton price $/cwt
-        # price $/MT = $/cwt × 100 / 45.359
-        mu_q = mutton_imp_qty.get(y)
-        mu_p = mutton_price.get(y)
-        mu_v = _r(mu_q * mu_p * 100 / 45.359, 0) if (mu_q is not None and mu_p is not None) else None
-
-        # Poultry import value: qty (thousand MT) × price per MT; poultry price cents/lb
-        # price $/MT = (cents/lb / 100) × 2204.622
-        pl_q = poultry_imp_qty.get(y)
-        pl_p = poultry_price.get(y)
-        pl_v = _r(pl_q * (pl_p / 100) * 2204.622, 0) if (pl_q is not None and pl_p is not None) else None
-
-        # Wine import value: estimated at average import price ~$0.50/gal pre-1920, varying after
-        # qty in thousand MT, approx $500/MT average import value
-        wi_q = wine_imp_qty.get(y)
-        wi_v = _r(wi_q * 500, 0) if wi_q is not None else None
-
-        # Tomatoes import value: qty (thousand MT) × price per MT; tomatoes price $/ton
-        # price $/MT = $/short ton × 1.1023 (1 MT = 1.1023 short tons)
-        to_q = tomatoes_imp_qty.get(y)
-        to_p = tomatoes_price.get(y)
-        to_v = _r(to_q * to_p * 1.1023, 0) if (to_q is not None and to_p is not None) else None
-
-        # Oranges import value: qty (thousand MT) × price per MT; oranges price $/box (75 lb)
-        # 1 MT = 2204.622 lbs / 75 lbs/box = 29.395 boxes; price $/MT = $/box × 29.395
-        or_q = oranges_imp_qty.get(y)
-        or_p = oranges_price.get(y)
-        or_v = _r(or_q * or_p * 29.395, 0) if (or_q is not None and or_p is not None) else None
-
-        # Rice import value: qty (thousand MT) × price per MT; rice price cents/lb
-        # price $/MT = (cents/lb / 100) × 2204.622
-        ri_q = rice_imp_qty.get(y)
-        ri_p = rice_price.get(y)
-        ri_v = _r(ri_q * (ri_p / 100) * 2204.622, 0) if (ri_q is not None and ri_p is not None) else None
-
+        # All other commodity import values: actual data not yet available
+        # (requires digitisation of detailed Foreign Commerce & Navigation reports)
         rows.append([
             y,
-            wh_v,   # Wheat
-            ry_v,   # Rye
-            ba_v,   # Barley
-            oa_v,   # Oats
-            co_v,   # Corn
-            po_v,   # Potatoes
-            su_v,   # Sugar
-            eg_v,   # Eggs
-            mi_v,   # Milk
-            ch_v,   # Cheese
-            bu_v,   # Butter
-            be_v,   # Beef
-            pk_v,   # Pork
-            mu_v,   # Mutton
-            pl_v,   # Poultry
-            wi_v,   # Wine
-            to_v,   # Tomatoes
-            or_v,   # Oranges
-            None,   # Grains aggregate (value) - not summed here
-            None,   # Meat aggregate (value) - not summed here
-            ri_v,   # Rice
-            "HSUS Series U; USDA/FAS; estimated from quantity × price",
+            None,   # Wheat
+            None,   # Rye
+            None,   # Barley
+            None,   # Oats
+            None,   # Corn
+            None,   # Potatoes
+            su_v,   # Sugar – actual HSUS Series U 100
+            None,   # Eggs
+            None,   # Milk
+            None,   # Cheese
+            None,   # Butter
+            None,   # Beef
+            None,   # Pork
+            None,   # Mutton
+            None,   # Poultry
+            None,   # Wine
+            None,   # Tomatoes
+            None,   # Oranges
+            None,   # Grains aggregate
+            None,   # Meat aggregate
+            None,   # Rice
+            "HSUS Series U 94-115 (actual recorded trade values)",
         ])
     return rows
 
@@ -1505,9 +1415,52 @@ def build_exp_qty_rows():
 
 # ---------------------------------------------------------------------------
 # SHEET 6 – EXPORT_VALUES  (thousand USD)
+# Actual export values from HSUS Series U 73-93 (million $, converted below).
+# These are recorded trade values, NOT estimates from quantity × price.
 # ---------------------------------------------------------------------------
+
+# Actual wheat + flour export values (million $) – HSUS Series U 80
+# Source: Historical Statistics of the United States, Colonial Times to 1957,
+#         Series U 73-93 "Exports of Selected U.S. Merchandise: 1790 to 1957"
+wheat_flour_exp_val_mil = {
+    1881:213,1882:149,1883:175,1884:126,1885:126,1886:89,1887:143,1888:111,
+    1889:87,1890:102,1891:106,1892:237,1893:169,1894:129,1895:96,1896:92,
+    1897:116,1898:215,1899:177,1900:141,1901:166,1902:179,1903:162,1904:105,
+    1905:44,1906:88,1907:122,1908:164,1909:119,1910:95,1911:71,1912:79,
+    1913:142,1914:142,1915:428,1916:313,1917:384,1918:506,1919:650,1920:821,
+    1921:561,1922:292,1923:205,1924:328,1925:234,1926:285,1927:326,1928:194,
+    1929:192,1930:167,1931:84,1932:61,1933:19,1934:27,1935:15,1936:19,
+    1937:64,1938:101,1939:61,1940:53,1941:35,1942:28,1943:56,1944:76,
+    1945:330,1946:610,1947:868,1948:1393,1949:1002,1950:489,1951:997,
+    1952:942,1953:590,1954:427,1955:483,1956:798,1957:846,
+}
+
+# Actual meat products export values (million $) – HSUS Series U 84
+# Source: same as above
+meat_exp_val_mil = {
+    1881:134,1882:69,1883:61,1884:64,1885:63,1886:54,1887:53,1888:52,
+    1889:59,1890:78,1891:81,1892:83,1893:79,1894:80,1895:81,1896:81,
+    1897:88,1898:104,1899:109,1900:114,1901:121,1902:121,1903:104,1904:101,
+    1905:99,1906:116,1907:108,1908:102,1909:82,1910:62,1911:66,1912:72,
+    1913:68,1914:68,1915:132,1916:198,1917:274,1918:668,1919:698,1920:279,
+    1921:157,1922:140,1923:154,1924:121,1925:127,1926:107,1927:71,1928:68,
+    1929:79,1930:66,1931:36,1932:19,1933:26,1934:35,1935:227,1936:26,
+    1937:25,1938:28,1939:32,1940:22,1941:99,1942:358,1943:617,1944:536,
+    1945:290,1946:341,1947:129,1948:57,1949:51,1950:43,1951:60,1952:52,
+    1953:60,1954:61,1955:70,1956:99,1957:113,
+}
+
+
 def build_exp_val_rows():
+    """Build export value rows using actual recorded trade values from HSUS.
+
+    Wheat+flour values: HSUS Series U 80 (includes wheat grain and flour).
+    Meat products values: HSUS Series U 84 (aggregate meat products).
+    Other commodities: set to None (actual commodity-level export values
+    require detailed Foreign Commerce and Navigation reports).
+    """
     all_years = sorted(set(
+        list(wheat_flour_exp_val_mil) + list(meat_exp_val_mil) +
         list(wheat_exp_qty_raw) + list(corn_exp_qty_raw) +
         list(pork_exp_qty_raw) + list(beef_exp_qty) +
         list(rye_exp_qty_raw) + list(barley_exp_qty_raw) +
@@ -1521,106 +1474,40 @@ def build_exp_val_rows():
     ))
     rows = []
     for y in all_years:
-        # Wheat export value: million bu × cents/bu × 10 = thousand USD
-        wq = wheat_exp_qty_raw.get(y)
-        wp = wheat_price.get(y)
-        wv = _r(wq * wp * 10, 0) if (wq is not None and wp is not None) else None
+        # Wheat+flour export value: actual recorded value from HSUS U80 (million $ → thousand $)
+        wh_raw = wheat_flour_exp_val_mil.get(y)
+        wv = _r(wh_raw * 1000, 0) if wh_raw is not None else None
 
-        # Rye export value: million bu × cents/bu × 10 = thousand USD
-        ryq = rye_exp_qty_raw.get(y)
-        ryp = rye_price.get(y)
-        ryv = _r(ryq * ryp * 10, 0) if (ryq is not None and ryp is not None) else None
+        # Meat products export value: actual recorded value from HSUS U84 (million $ → thousand $)
+        # This is aggregate meat products; individual beef/pork/mutton not separately available
+        mt_raw = meat_exp_val_mil.get(y)
 
-        # Barley export value: million bu × cents/bu × 10 = thousand USD
-        baq = barley_exp_qty_raw.get(y)
-        bap = barley_price.get(y)
-        bav = _r(baq * bap * 10, 0) if (baq is not None and bap is not None) else None
-
-        # Oats export value: million bu × cents/bu × 10 = thousand USD
-        oaq = oats_exp_qty_raw.get(y)
-        oap = oats_price.get(y)
-        oav = _r(oaq * oap * 10, 0) if (oaq is not None and oap is not None) else None
-
-        # Corn export value: million bu × cents/bu × 10 = thousand USD
-        cq = corn_exp_qty_raw.get(y)
-        cp = corn_price.get(y)
-        cv = _r(cq * cp * 10, 0) if (cq is not None and cp is not None) else None
-
-        # Potatoes export value: qty (thousand MT) × price per MT
-        # price $/MT = (cents/bu / 100) / 0.027216
-        poq = potatoes_exp_qty.get(y)
-        pop_ = potatoes_price.get(y)
-        pov = _r(poq * (pop_ / 100) / 0.027216, 0) if (poq is not None and pop_ is not None) else None
-
-        # Sugar export value: qty (thousand short tons) × price ($/short ton)
-        suq = sugar_exp_qty_raw.get(y)
-        sup = sugar_price.get(y)
-        suv = _r(suq * sup * 1000, 0) if (suq is not None and sup is not None) else None
-
-        # Eggs export value: million doz × cents/doz × 10 = thousand USD
-        egq = eggs_exp_qty_raw.get(y)
-        egp = eggs_price.get(y)
-        egv = _r(egq * egp * 10, 0) if (egq is not None and egp is not None) else None
-
-        # Milk export value: million lbs × ($/cwt / 100) × 1000 = thousand USD
-        miq = milk_exp_qty_raw.get(y)
-        mip = milk_price.get(y)
-        miv = _r(miq * mip / 100 * 1000, 0) if (miq is not None and mip is not None) else None
-
-        # Cheese export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
-        chq = cheese_exp_qty_raw.get(y)
-        chp = cheese_price.get(y)
-        chv = _r(chq * chp / 100 * 1000, 0) if (chq is not None and chp is not None) else None
-
-        # Butter export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
-        buq = butter_exp_qty_raw.get(y)
-        bup = butter_price.get(y)
-        buv = _r(buq * bup / 100 * 1000, 0) if (buq is not None and bup is not None) else None
-
-        # Beef export value: qty (thousand MT) × $/cwt × 100 / 45.359 = thousand USD
-        bq = beef_exp_qty.get(y)
-        bp = beef_price.get(y)
-        bv = _r(bq * bp * 100 / 45.359, 0) if (bq is not None and bp is not None) else None
-
-        # Pork export value: million lbs × $/cwt / 100 × 1000 = thousand USD
-        pq = pork_exp_qty_raw.get(y)
-        pp = pork_price.get(y)
-        pv = _r(pq * pp / 100 * 1000, 0) if (pq is not None and pp is not None) else None
-
-        # Mutton export value: qty (thousand MT) × $/cwt × 100 / 45.359 = thousand USD
-        muq = mutton_exp_qty.get(y)
-        mup = mutton_price.get(y)
-        muv = _r(muq * mup * 100 / 45.359, 0) if (muq is not None and mup is not None) else None
-
-        # Poultry export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
-        plq = poultry_exp_qty_raw.get(y)
-        plp = poultry_price.get(y)
-        plv = _r(plq * plp / 100 * 1000, 0) if (plq is not None and plp is not None) else None
-
-        # Wine export value: qty (thousand MT) × estimated $500/MT = thousand USD
-        wiq = wine_exp_qty.get(y)
-        wiv = _r(wiq * 500, 0) if wiq is not None else None
-
-        # Tomatoes export value: qty (thousand MT) × price per MT
-        # price $/MT = $/short ton × 1.1023
-        toq = tomatoes_exp_qty.get(y)
-        top_ = tomatoes_price.get(y)
-        tov = _r(toq * top_ * 1.1023, 0) if (toq is not None and top_ is not None) else None
-
-        # Oranges export value: thousand boxes × $/box × 1 = thousand USD
-        orq = oranges_exp_qty_raw.get(y)
-        orp = oranges_price.get(y)
-        orv = _r(orq * orp, 0) if (orq is not None and orp is not None) else None
-
-        # Rice export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
-        riq = rice_exp_qty_raw.get(y)
-        rip = rice_price.get(y)
-        riv = _r(riq * rip / 100 * 1000, 0) if (riq is not None and rip is not None) else None
-
+        # All other commodity export values: actual data not yet available
+        # (requires digitisation of detailed Foreign Commerce & Navigation reports)
         rows.append([
-            y, wv, ryv, bav, oav, cv, pov, suv, egv, miv, chv, buv,
-            bv, pv, muv, plv, wiv, tov, orv, None, None, riv,
-            "HSUS Series U; USDA/FAS; estimated from quantity × farm price",
+            y,
+            wv,     # Wheat (includes flour) – actual HSUS Series U 80
+            None,   # Rye
+            None,   # Barley
+            None,   # Oats
+            None,   # Corn
+            None,   # Potatoes
+            None,   # Sugar
+            None,   # Eggs
+            None,   # Milk
+            None,   # Cheese
+            None,   # Butter
+            None,   # Beef
+            None,   # Pork
+            None,   # Mutton
+            None,   # Poultry
+            None,   # Wine
+            None,   # Tomatoes
+            None,   # Oranges
+            None,   # Grains aggregate
+            _r(mt_raw * 1000, 0) if mt_raw is not None else None,  # Meat aggregate – actual HSUS U 84
+            None,   # Rice
+            "HSUS Series U 73-93 (actual recorded trade values)",
         ])
     return rows
 
@@ -1701,9 +1588,8 @@ def main():
             "Import_Values",
             "USA - Import Values",
             "Unit: Thousand USD (annual)",
-            "Sources: Historical Statistics of the United States Series U; "
-            "USDA/FAS; US Bureau of Statistics; estimated from quantity × price where direct "
-            "value series unavailable.",
+            "Sources: Historical Statistics of the United States, Colonial Times to 1957, "
+            "Series U 94-115 (actual recorded import values). Sugar values from U100.",
             build_imp_val_rows(),
         ),
         (
@@ -1718,9 +1604,9 @@ def main():
             "Export_Values",
             "USA - Export Values",
             "Unit: Thousand USD (annual)",
-            "Sources: Historical Statistics of the United States Series U; "
-            "USDA/FAS; US Bureau of Statistics; estimated from quantity × farm price "
-            "where direct value series unavailable.",
+            "Sources: Historical Statistics of the United States, Colonial Times to 1957, "
+            "Series U 73-93 (actual recorded export values). Wheat+flour from U80; "
+            "Meat products from U84.",
             build_exp_val_rows(),
         ),
     ]
