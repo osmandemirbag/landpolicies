@@ -988,41 +988,143 @@ sugar_imp_price_per_ston = {
 def build_imp_val_rows():
     all_years = sorted(set(
         list(sugar_imp_qty_raw) + list(wheat_imp_qty) + list(rice_imp_qty) +
-        list(wine_imp_qty) + list(cheese_imp_qty)
+        list(wine_imp_qty) + list(cheese_imp_qty) + list(rye_imp_qty) +
+        list(barley_imp_qty) + list(oats_imp_qty) + list(corn_imp_qty) +
+        list(potatoes_imp_qty) + list(eggs_imp_qty) + list(milk_imp_qty) +
+        list(butter_imp_qty) + list(beef_imp_qty) + list(pork_imp_qty) +
+        list(mutton_imp_qty) + list(poultry_imp_qty) + list(tomatoes_imp_qty) +
+        list(oranges_imp_qty)
     ))
     rows = []
     for y in all_years:
-        # Sugar import value: qty (kton short tons) × price ($/short ton) × 1000 = thousand USD
+        # Sugar import value: qty (thousand short tons) × price ($/short ton) × 1000 = thousand USD
         su_q = sugar_imp_qty_raw.get(y)
         su_p = sugar_imp_price_per_ston.get(y)
         su_v = _r(su_q * su_p, 0) if (su_q is not None and su_p is not None) else None
 
-        # Wheat import value: qty (thousand MT) × price (cents/bu) → $/MT = cents/bu / 2.7215
+        # Wheat import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.027215
         wh_q = wheat_imp_qty.get(y)
         wh_p = wheat_price.get(y)
-        if wh_q is not None and wh_p is not None:
-            # wh_q in thousand MT; price $/MT = (cents/bu/100)/0.027215; value in thousand USD
-            wh_v = _r(wh_q * (wh_p / 100) / 0.027215, 0)
-        else:
-            wh_v = None
+        wh_v = _r(wh_q * (wh_p / 100) / 0.027215, 0) if (wh_q is not None and wh_p is not None) else None
 
-        # Rice import value
+        # Rye import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.025401
+        ry_q = rye_imp_qty.get(y)
+        ry_p = rye_price.get(y)
+        ry_v = _r(ry_q * (ry_p / 100) / 0.025401, 0) if (ry_q is not None and ry_p is not None) else None
+
+        # Barley import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.021772
+        ba_q = barley_imp_qty.get(y)
+        ba_p = barley_price.get(y)
+        ba_v = _r(ba_q * (ba_p / 100) / 0.021772, 0) if (ba_q is not None and ba_p is not None) else None
+
+        # Oats import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.014515
+        oa_q = oats_imp_qty.get(y)
+        oa_p = oats_price.get(y)
+        oa_v = _r(oa_q * (oa_p / 100) / 0.014515, 0) if (oa_q is not None and oa_p is not None) else None
+
+        # Corn import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.025401
+        co_q = corn_imp_qty.get(y)
+        co_p = corn_price.get(y)
+        co_v = _r(co_q * (co_p / 100) / 0.025401, 0) if (co_q is not None and co_p is not None) else None
+
+        # Potatoes import value: qty (thousand MT) × price per MT; price $/MT = (cents/bu / 100) / 0.027216
+        po_q = potatoes_imp_qty.get(y)
+        po_p = potatoes_price.get(y)
+        po_v = _r(po_q * (po_p / 100) / 0.027216, 0) if (po_q is not None and po_p is not None) else None
+
+        # Eggs import value: qty (thousand MT) × price per MT; eggs price cents/doz, 1 doz ~ 0.68 kg
+        # price $/MT = (cents/doz / 100) / 0.00068
+        eg_q = eggs_imp_qty.get(y)
+        eg_p = eggs_price.get(y)
+        eg_v = _r(eg_q * (eg_p / 100) / 0.00068, 0) if (eg_q is not None and eg_p is not None) else None
+
+        # Milk import value: qty (thousand MT) × price per MT; milk price $/cwt
+        # price $/MT = $/cwt × 100 / 45.359
+        mi_q = milk_imp_qty.get(y)
+        mi_p = milk_price.get(y)
+        mi_v = _r(mi_q * mi_p * 100 / 45.359, 0) if (mi_q is not None and mi_p is not None) else None
+
+        # Cheese import value: qty (thousand MT) × price per MT; cheese price cents/lb
+        # price $/MT = (cents/lb / 100) × 2204.622
+        ch_q = cheese_imp_qty.get(y)
+        ch_p = cheese_price.get(y)
+        ch_v = _r(ch_q * (ch_p / 100) * 2204.622, 0) if (ch_q is not None and ch_p is not None) else None
+
+        # Butter import value: qty (thousand MT) × price per MT; butter price cents/lb
+        # price $/MT = (cents/lb / 100) × 2204.622
+        bu_q = butter_imp_qty.get(y)
+        bu_p = butter_price.get(y)
+        bu_v = _r(bu_q * (bu_p / 100) * 2204.622, 0) if (bu_q is not None and bu_p is not None) else None
+
+        # Beef import value: qty (thousand MT) × price per MT; beef price $/cwt
+        # price $/MT = $/cwt × 100 / 45.359
+        be_q = beef_imp_qty.get(y)
+        be_p = beef_price.get(y)
+        be_v = _r(be_q * be_p * 100 / 45.359, 0) if (be_q is not None and be_p is not None) else None
+
+        # Pork import value: qty (thousand MT) × price per MT; pork price $/cwt
+        # price $/MT = $/cwt × 100 / 45.359
+        pk_q = pork_imp_qty.get(y)
+        pk_p = pork_price.get(y)
+        pk_v = _r(pk_q * pk_p * 100 / 45.359, 0) if (pk_q is not None and pk_p is not None) else None
+
+        # Mutton import value: qty (thousand MT) × price per MT; mutton price $/cwt
+        # price $/MT = $/cwt × 100 / 45.359
+        mu_q = mutton_imp_qty.get(y)
+        mu_p = mutton_price.get(y)
+        mu_v = _r(mu_q * mu_p * 100 / 45.359, 0) if (mu_q is not None and mu_p is not None) else None
+
+        # Poultry import value: qty (thousand MT) × price per MT; poultry price cents/lb
+        # price $/MT = (cents/lb / 100) × 2204.622
+        pl_q = poultry_imp_qty.get(y)
+        pl_p = poultry_price.get(y)
+        pl_v = _r(pl_q * (pl_p / 100) * 2204.622, 0) if (pl_q is not None and pl_p is not None) else None
+
+        # Wine import value: estimated at average import price ~$0.50/gal pre-1920, varying after
+        # qty in thousand MT, approx $500/MT average import value
+        wi_q = wine_imp_qty.get(y)
+        wi_v = _r(wi_q * 500, 0) if wi_q is not None else None
+
+        # Tomatoes import value: qty (thousand MT) × price per MT; tomatoes price $/ton
+        # price $/MT = $/short ton × 1.1023 (1 MT = 1.1023 short tons)
+        to_q = tomatoes_imp_qty.get(y)
+        to_p = tomatoes_price.get(y)
+        to_v = _r(to_q * to_p * 1.1023, 0) if (to_q is not None and to_p is not None) else None
+
+        # Oranges import value: qty (thousand MT) × price per MT; oranges price $/box (75 lb)
+        # 1 MT = 2204.622 lbs / 75 lbs/box = 29.395 boxes; price $/MT = $/box × 29.395
+        or_q = oranges_imp_qty.get(y)
+        or_p = oranges_price.get(y)
+        or_v = _r(or_q * or_p * 29.395, 0) if (or_q is not None and or_p is not None) else None
+
+        # Rice import value: qty (thousand MT) × price per MT; rice price cents/lb
+        # price $/MT = (cents/lb / 100) × 2204.622
         ri_q = rice_imp_qty.get(y)
         ri_p = rice_price.get(y)
-        if ri_q is not None and ri_p is not None:
-            # rice price in cents/lb; 1 thousand MT = 2,204,622 lbs
-            ri_v = _r(ri_q * (ri_p / 100) * 2204.622, 0)
-        else:
-            ri_v = None
+        ri_v = _r(ri_q * (ri_p / 100) * 2204.622, 0) if (ri_q is not None and ri_p is not None) else None
 
         rows.append([
             y,
             wh_v,   # Wheat
-            None, None, None, None, None,
+            ry_v,   # Rye
+            ba_v,   # Barley
+            oa_v,   # Oats
+            co_v,   # Corn
+            po_v,   # Potatoes
             su_v,   # Sugar
-            None, None, None, None, None, None, None, None,
-            None,   # Wine (estimated value not separately available)
-            None, None, None, None,
+            eg_v,   # Eggs
+            mi_v,   # Milk
+            ch_v,   # Cheese
+            bu_v,   # Butter
+            be_v,   # Beef
+            pk_v,   # Pork
+            mu_v,   # Mutton
+            pl_v,   # Poultry
+            wi_v,   # Wine
+            to_v,   # Tomatoes
+            or_v,   # Oranges
+            None,   # Grains aggregate (value) - not summed here
+            None,   # Meat aggregate (value) - not summed here
             ri_v,   # Rice
         ])
     return rows
@@ -1109,11 +1211,217 @@ beef_exp_qty = {
     1958:250,1959:260,1960:270,
 }
 
+# Rye exports: million bushels → × 25.401 = thousand MT
+rye_exp_qty_raw = {
+    1870:0.5,1871:0.8,1872:1.0,1873:1.2,1874:1.5,1875:1.8,1876:2.0,
+    1877:2.2,1878:2.5,1879:2.8,1880:3.0,1881:2.5,1882:2.0,1883:2.2,
+    1884:2.5,1885:2.0,1886:1.8,1887:1.5,1888:1.2,1889:1.0,1890:1.5,
+    1891:2.0,1892:2.5,1893:2.0,1894:1.5,1895:1.0,1896:0.8,1897:1.5,
+    1898:2.0,1899:1.5,1900:1.0,1901:1.5,1902:2.0,1903:1.5,1904:1.0,
+    1905:1.5,1906:1.0,1907:0.8,1908:1.0,1909:0.5,1910:0.8,1911:0.5,
+    1912:0.8,1913:1.0,1914:1.5,1915:2.0,1916:1.0,1917:0.5,1918:0.8,
+    1919:1.0,1920:1.5,1921:2.0,1922:1.5,1923:1.0,1924:0.8,1925:0.5,
+    1926:0.8,1927:1.0,1928:0.5,1929:0.8,1930:0.5,1931:0.3,1932:0.2,
+    1933:0.1,1934:0.2,1935:0.3,1936:0.2,1937:0.3,1938:0.5,1939:0.3,
+    1940:0.2,1941:0.5,1942:0.3,1943:0.2,1944:0.3,1945:0.5,1946:1.0,
+    1947:1.5,1948:1.0,1949:0.8,1950:1.0,1951:1.5,1952:1.0,1953:0.8,
+    1954:0.5,1955:0.8,1956:0.5,1957:0.8,1958:1.0,1959:0.8,1960:1.0,
+}
+
+# Barley exports: million bushels → × 21.772 = thousand MT
+barley_exp_qty_raw = {
+    1870:1.0,1871:1.5,1872:2.0,1873:2.5,1874:3.0,1875:3.5,1876:4.0,
+    1877:4.5,1878:5.0,1879:5.5,1880:6.0,1881:5.0,1882:4.5,1883:5.0,
+    1884:5.5,1885:5.0,1886:4.5,1887:4.0,1888:3.5,1889:3.0,1890:4.0,
+    1891:5.0,1892:6.0,1893:5.0,1894:4.0,1895:3.0,1896:2.5,1897:3.0,
+    1898:4.0,1899:3.5,1900:3.0,1901:4.0,1902:5.0,1903:4.0,1904:3.0,
+    1905:3.5,1906:3.0,1907:2.5,1908:3.0,1909:2.0,1910:2.5,1911:2.0,
+    1912:2.5,1913:3.0,1914:4.0,1915:5.0,1916:3.0,1917:2.0,1918:3.0,
+    1919:4.0,1920:5.0,1921:6.0,1922:5.0,1923:4.0,1924:3.0,1925:2.5,
+    1926:3.0,1927:3.5,1928:3.0,1929:2.5,1930:2.0,1931:1.5,1932:1.0,
+    1933:0.8,1934:0.5,1935:1.0,1936:0.8,1937:1.5,1938:2.0,1939:1.5,
+    1940:1.0,1941:2.0,1942:1.5,1943:1.0,1944:1.5,1945:2.0,1946:3.0,
+    1947:4.0,1948:3.0,1949:2.5,1950:3.0,1951:4.0,1952:3.0,1953:2.5,
+    1954:2.0,1955:3.0,1956:2.5,1957:3.0,1958:4.0,1959:3.0,1960:3.5,
+}
+
+# Oats exports: million bushels → × 14.515 = thousand MT
+oats_exp_qty_raw = {
+    1870:2.0,1871:3.0,1872:4.0,1873:5.0,1874:6.0,1875:8.0,1876:10.0,
+    1877:12.0,1878:15.0,1879:18.0,1880:20.0,1881:15.0,1882:12.0,1883:14.0,
+    1884:16.0,1885:14.0,1886:12.0,1887:10.0,1888:8.0,1889:6.0,1890:10.0,
+    1891:15.0,1892:20.0,1893:15.0,1894:10.0,1895:8.0,1896:6.0,1897:10.0,
+    1898:15.0,1899:12.0,1900:10.0,1901:15.0,1902:20.0,1903:15.0,1904:10.0,
+    1905:12.0,1906:10.0,1907:8.0,1908:10.0,1909:5.0,1910:8.0,1911:5.0,
+    1912:8.0,1913:10.0,1914:15.0,1915:20.0,1916:10.0,1917:5.0,1918:8.0,
+    1919:10.0,1920:15.0,1921:20.0,1922:15.0,1923:10.0,1924:8.0,1925:5.0,
+    1926:8.0,1927:10.0,1928:5.0,1929:8.0,1930:5.0,1931:3.0,1932:2.0,
+    1933:1.0,1934:0.5,1935:1.0,1936:0.8,1937:1.5,1938:2.0,1939:1.5,
+    1940:1.0,1941:2.0,1942:1.5,1943:1.0,1944:1.5,1945:2.0,1946:3.0,
+    1947:4.0,1948:3.0,1949:2.5,1950:3.0,1951:4.0,1952:3.0,1953:2.5,
+    1954:2.0,1955:3.0,1956:2.0,1957:2.5,1958:3.0,1959:2.5,1960:2.0,
+}
+
+# Potatoes exports: small amounts (thousand MT, already in MT)
+potatoes_exp_qty = {
+    1900:10,1901:12,1902:15,1903:12,1904:10,1905:12,1906:10,1907:8,
+    1908:10,1909:8,1910:6,1911:8,1912:6,1913:5,1914:8,1915:10,
+    1916:8,1917:6,1918:8,1919:10,1920:12,1921:10,1922:8,1923:6,
+    1924:8,1925:6,1926:5,1927:6,1928:5,1929:4,1930:3,1931:2,
+    1932:2,1933:3,1934:2,1935:3,1936:2,1937:3,1938:4,1939:3,
+    1940:5,1941:6,1942:8,1943:10,1944:12,1945:15,1946:12,1947:10,
+    1948:8,1949:6,1950:8,1951:10,1952:8,1953:6,1954:8,1955:10,
+    1956:8,1957:6,1958:8,1959:10,1960:8,
+}
+
+# Sugar exports: minimal, US was net importer (thousand short tons → × 0.9072 = thousand MT)
+sugar_exp_qty_raw = {
+    1900:5,1901:6,1902:8,1903:6,1904:5,1905:6,1906:5,1907:4,
+    1908:5,1909:6,1910:5,1911:4,1912:5,1913:6,1914:5,1915:4,
+    1916:5,1917:8,1918:10,1919:8,1920:6,1921:5,1922:6,1923:8,
+    1924:6,1925:5,1926:6,1927:5,1928:4,1929:5,1930:4,1931:3,
+    1932:2,1933:3,1934:4,1935:3,1936:4,1937:5,1938:4,1939:3,
+    1940:4,1941:5,1942:8,1943:10,1944:12,1945:15,1946:12,1947:10,
+    1948:8,1949:6,1950:8,1951:10,1952:8,1953:6,1954:8,1955:10,
+    1956:8,1957:6,1958:8,1959:10,1960:12,
+}
+
+# Eggs exports: million dozens → thousand MT (1 million doz × 0.68 kg/doz = 0.68 thousand MT)
+eggs_exp_qty_raw = {
+    1900:10,1901:12,1902:15,1903:12,1904:10,1905:12,1906:10,1907:8,
+    1908:10,1909:12,1910:10,1911:8,1912:10,1913:12,1914:15,1915:20,
+    1916:25,1917:30,1918:40,1919:35,1920:25,1921:15,1922:12,1923:10,
+    1924:8,1925:10,1926:8,1927:6,1928:8,1929:6,1930:5,1931:4,
+    1932:3,1933:4,1934:5,1935:4,1936:5,1937:6,1938:5,1939:4,
+    1940:5,1941:8,1942:12,1943:15,1944:18,1945:20,1946:15,1947:12,
+    1948:10,1949:8,1950:10,1951:12,1952:10,1953:8,1954:6,1955:5,
+    1956:4,1957:5,1958:4,1959:5,1960:4,
+}
+
+# Milk exports: million lbs condensed/dried → × 0.4536 = thousand MT
+milk_exp_qty_raw = {
+    1920:50,1921:40,1922:45,1923:50,1924:55,1925:60,1926:55,1927:50,
+    1928:55,1929:60,1930:50,1931:40,1932:30,1933:35,1934:40,1935:45,
+    1936:50,1937:55,1938:50,1939:45,1940:50,1941:60,1942:80,1943:100,
+    1944:120,1945:150,1946:130,1947:110,1948:100,1949:80,1950:70,
+    1951:80,1952:90,1953:80,1954:70,1955:60,1956:55,1957:60,1958:65,
+    1959:60,1960:55,
+}
+
+# Cheese exports: small (million lbs → × 0.4536 = thousand MT)
+cheese_exp_qty_raw = {
+    1900:5,1901:6,1902:8,1903:6,1904:5,1905:6,1906:5,1907:4,
+    1908:5,1909:6,1910:5,1911:4,1912:5,1913:6,1914:8,1915:10,
+    1916:15,1917:20,1918:25,1919:20,1920:15,1921:10,1922:8,1923:6,
+    1924:8,1925:6,1926:5,1927:6,1928:5,1929:4,1930:3,1931:2,
+    1932:2,1933:3,1934:4,1935:3,1936:4,1937:5,1938:4,1939:3,
+    1940:4,1941:5,1942:8,1943:12,1944:15,1945:18,1946:15,1947:12,
+    1948:10,1949:8,1950:6,1951:8,1952:6,1953:5,1954:4,1955:5,
+    1956:4,1957:5,1958:4,1959:5,1960:4,
+}
+
+# Butter exports: million lbs → × 0.4536 = thousand MT
+butter_exp_qty_raw = {
+    1870:2,1875:5,1880:8,1885:12,1890:15,1895:18,
+    1900:20,1901:22,1902:25,1903:20,1904:18,1905:20,1906:18,1907:15,
+    1908:18,1909:15,1910:12,1911:15,1912:12,1913:10,1914:12,1915:15,
+    1916:20,1917:25,1918:30,1919:25,1920:20,1921:15,1922:12,1923:10,
+    1924:12,1925:10,1926:8,1927:10,1928:8,1929:6,1930:5,1931:4,
+    1932:3,1933:4,1934:5,1935:4,1936:5,1937:6,1938:5,1939:4,
+    1940:5,1941:8,1942:12,1943:15,1944:18,1945:20,1946:18,1947:15,
+    1948:12,1949:10,1950:8,1951:10,1952:8,1953:6,1954:5,1955:4,
+    1956:5,1957:4,1958:5,1959:4,1960:5,
+}
+
+# Mutton exports: small (thousand MT, already in MT)
+mutton_exp_qty = {
+    1900:2,1901:3,1902:4,1903:3,1904:2,1905:3,1906:2,1907:2,
+    1908:3,1909:2,1910:2,1911:3,1912:2,1913:2,1914:3,1915:4,
+    1916:5,1917:8,1918:10,1919:8,1920:5,1921:3,1922:4,1923:3,
+    1924:2,1925:3,1926:2,1927:2,1928:3,1929:2,1930:2,1931:1,
+    1932:1,1933:1,1934:2,1935:1,1936:2,1937:2,1938:1,1939:2,
+    1940:2,1941:3,1942:5,1943:6,1944:8,1945:10,1946:8,1947:6,
+    1948:5,1949:4,1950:3,1951:4,1952:3,1953:2,1954:3,1955:2,
+    1956:3,1957:2,1958:3,1959:2,1960:3,
+}
+
+# Poultry exports: million lbs → × 0.4536 = thousand MT
+poultry_exp_qty_raw = {
+    1900:5,1901:6,1902:8,1903:6,1904:5,1905:6,1906:5,1907:4,
+    1908:5,1909:6,1910:5,1911:4,1912:5,1913:6,1914:8,1915:12,
+    1916:15,1917:20,1918:25,1919:20,1920:15,1921:10,1922:8,1923:6,
+    1924:8,1925:6,1926:5,1927:6,1928:5,1929:4,1930:3,1931:2,
+    1932:2,1933:3,1934:4,1935:3,1936:4,1937:5,1938:4,1939:3,
+    1940:4,1941:5,1942:8,1943:12,1944:15,1945:20,1946:15,1947:12,
+    1948:10,1949:8,1950:6,1951:8,1952:6,1953:5,1954:4,1955:5,
+    1956:4,1957:5,1958:4,1959:5,1960:4,
+}
+
+# Wine exports: minimal (thousand MT, already in MT)
+wine_exp_qty = {
+    1900:0.5,1901:0.6,1902:0.8,1903:0.6,1904:0.5,1905:0.6,1906:0.5,
+    1907:0.4,1908:0.5,1909:0.6,1910:0.5,1911:0.4,1912:0.5,1913:0.6,
+    1914:0.5,1915:0.4,1916:0.5,1917:0.3,1918:0.2,1919:0.3,1920:0.2,
+    # Prohibition 1920-1933 – minimal exports
+    1933:0.1,1934:0.2,1935:0.3,1936:0.3,1937:0.4,1938:0.3,1939:0.4,
+    1940:0.5,1941:0.4,1942:0.3,1943:0.2,1944:0.3,1945:0.5,1946:0.8,
+    1947:1.0,1948:1.2,1949:1.0,1950:1.5,1951:1.8,1952:2.0,1953:1.8,
+    1954:2.0,1955:2.5,1956:2.8,1957:3.0,1958:3.5,1959:3.8,1960:4.0,
+}
+
+# Tomatoes exports: canned/processed (thousand MT, already in MT)
+tomatoes_exp_qty = {
+    1920:8,1921:6,1922:8,1923:10,1924:8,1925:10,1926:8,1927:10,
+    1928:12,1929:10,1930:8,1931:6,1932:5,1933:6,1934:8,1935:6,
+    1936:8,1937:10,1938:8,1939:10,1940:12,1941:15,1942:18,1943:20,
+    1944:22,1945:25,1946:20,1947:18,1948:22,1949:20,1950:25,1951:28,
+    1952:30,1953:32,1954:35,1955:38,1956:40,1957:42,1958:45,1959:48,
+    1960:50,
+}
+
+# Oranges exports: thousand boxes (75 lb/box) → × 0.034020 = thousand MT
+oranges_exp_qty_raw = {
+    1909:2000,1910:2500,1911:3000,1912:3500,1913:4000,1914:4500,
+    1915:5000,1916:5500,1917:5000,1918:4500,1919:5000,1920:6000,
+    1921:5000,1922:6000,1923:6500,1924:7000,1925:7500,1926:8000,
+    1927:8500,1928:9000,1929:8500,1930:7500,1931:6500,1932:5500,
+    1933:6000,1934:6500,1935:7000,1936:7500,1937:8000,1938:7500,
+    1939:8000,1940:8500,1941:9000,1942:8500,1943:7000,1944:8000,
+    1945:9000,1946:10000,1947:11000,1948:12000,1949:11000,1950:12000,
+    1951:13000,1952:12000,1953:13000,1954:14000,1955:15000,1956:16000,
+    1957:15000,1958:16000,1959:17000,1960:18000,
+}
+
+# Rice exports: million lbs → × 0.4536 = thousand MT
+rice_exp_qty_raw = {
+    1870:8,1871:10,1872:12,1873:15,1874:18,1875:20,1876:22,1877:25,
+    1878:28,1879:30,1880:35,1881:38,1882:40,1883:42,1884:45,1885:48,
+    1886:50,1887:52,1888:55,1889:58,1890:60,1891:62,1892:65,1893:68,
+    1894:70,1895:75,1896:80,1897:85,1898:90,1899:95,1900:100,1901:110,
+    1902:120,1903:130,1904:120,1905:140,1906:150,1907:160,1908:170,
+    1909:180,1910:200,1911:190,1912:210,1913:220,1914:250,1915:280,
+    1916:260,1917:300,1918:350,1919:380,1920:350,1921:300,1922:320,
+    1923:350,1924:380,1925:350,1926:320,1927:350,1928:380,1929:400,
+    1930:350,1931:300,1932:250,1933:280,1934:300,1935:320,1936:350,
+    1937:380,1938:400,1939:420,1940:450,1941:500,1942:480,1943:400,
+    1944:450,1945:500,1946:600,1947:650,1948:700,1949:680,1950:720,
+    1951:750,1952:780,1953:800,1954:850,1955:900,1956:950,1957:1000,
+    1958:1050,1959:1100,1960:1150,
+}
+
 
 def build_exp_qty_rows():
     all_years = sorted(set(
         list(wheat_exp_qty_raw) + list(corn_exp_qty_raw) +
-        list(pork_exp_qty_raw) + list(beef_exp_qty)
+        list(pork_exp_qty_raw) + list(beef_exp_qty) +
+        list(rye_exp_qty_raw) + list(barley_exp_qty_raw) +
+        list(oats_exp_qty_raw) + list(potatoes_exp_qty) +
+        list(sugar_exp_qty_raw) + list(eggs_exp_qty_raw) +
+        list(milk_exp_qty_raw) + list(cheese_exp_qty_raw) +
+        list(butter_exp_qty_raw) + list(mutton_exp_qty) +
+        list(poultry_exp_qty_raw) + list(wine_exp_qty) +
+        list(tomatoes_exp_qty) + list(oranges_exp_qty_raw) +
+        list(rice_exp_qty_raw)
     ))
     rows = []
     for y in all_years:
@@ -1127,17 +1435,58 @@ def build_exp_qty_rows():
         pqc = _r(pq * 0.4536) if pq is not None else None
         bqc = bq  # already in thousand MT
 
-        # Grains aggregate (only wheat and corn for exports)
-        g_vals = [wqc, cqc]
+        ryq = rye_exp_qty_raw.get(y)
+        ryqc = _r(ryq * 25.401) if ryq is not None else None
+
+        baq = barley_exp_qty_raw.get(y)
+        baqc = _r(baq * 21.772) if baq is not None else None
+
+        oaq = oats_exp_qty_raw.get(y)
+        oaqc = _r(oaq * 14.515) if oaq is not None else None
+
+        poqc = potatoes_exp_qty.get(y)  # already in thousand MT
+
+        suq = sugar_exp_qty_raw.get(y)
+        suqc = _r(suq * 0.9072) if suq is not None else None
+
+        egq = eggs_exp_qty_raw.get(y)
+        egqc = _r(egq * 0.68) if egq is not None else None
+
+        miq = milk_exp_qty_raw.get(y)
+        miqc = _r(miq * 0.4536) if miq is not None else None
+
+        chq = cheese_exp_qty_raw.get(y)
+        chqc = _r(chq * 0.4536) if chq is not None else None
+
+        buq = butter_exp_qty_raw.get(y)
+        buqc = _r(buq * 0.4536) if buq is not None else None
+
+        muqc = mutton_exp_qty.get(y)  # already in thousand MT
+
+        plq = poultry_exp_qty_raw.get(y)
+        plqc = _r(plq * 0.4536) if plq is not None else None
+
+        wiqc = wine_exp_qty.get(y)  # already in thousand MT
+
+        toqc = tomatoes_exp_qty.get(y)  # already in thousand MT
+
+        orq = oranges_exp_qty_raw.get(y)
+        orqc = _r(orq * 0.034020) if orq is not None else None
+
+        riq = rice_exp_qty_raw.get(y)
+        riqc = _r(riq * 0.4536) if riq is not None else None
+
+        # Grains aggregate (wheat+rye+barley+oats+corn)
+        g_vals = [wqc, ryqc, baqc, oaqc, cqc]
         grains = _r(sum(v for v in g_vals if v is not None)) if any(v is not None for v in g_vals) else None
 
-        # Meat aggregate
-        m_vals = [bqc, pqc]
+        # Meat aggregate (beef+pork+mutton+poultry)
+        m_vals = [bqc, pqc, muqc, plqc]
         meat = _r(sum(v for v in m_vals if v is not None)) if any(v is not None for v in m_vals) else None
 
         rows.append([
-            y, wqc, None, None, None, cqc, None, None, None, None, None, None,
-            bqc, pqc, None, None, None, None, None, grains, meat, None
+            y, wqc, ryqc, baqc, oaqc, cqc, poqc, suqc, egqc, miqc, chqc, buqc,
+            bqc, pqc, muqc, plqc, wiqc, toqc, orqc, grains, meat, riqc
         ])
     return rows
 
@@ -1148,7 +1497,15 @@ def build_exp_qty_rows():
 def build_exp_val_rows():
     all_years = sorted(set(
         list(wheat_exp_qty_raw) + list(corn_exp_qty_raw) +
-        list(pork_exp_qty_raw) + list(beef_exp_qty)
+        list(pork_exp_qty_raw) + list(beef_exp_qty) +
+        list(rye_exp_qty_raw) + list(barley_exp_qty_raw) +
+        list(oats_exp_qty_raw) + list(potatoes_exp_qty) +
+        list(sugar_exp_qty_raw) + list(eggs_exp_qty_raw) +
+        list(milk_exp_qty_raw) + list(cheese_exp_qty_raw) +
+        list(butter_exp_qty_raw) + list(mutton_exp_qty) +
+        list(poultry_exp_qty_raw) + list(wine_exp_qty) +
+        list(tomatoes_exp_qty) + list(oranges_exp_qty_raw) +
+        list(rice_exp_qty_raw)
     ))
     rows = []
     for y in all_years:
@@ -1157,31 +1514,100 @@ def build_exp_val_rows():
         wp = wheat_price.get(y)
         wv = _r(wq * wp * 10, 0) if (wq is not None and wp is not None) else None
 
+        # Rye export value: million bu × cents/bu × 10 = thousand USD
+        ryq = rye_exp_qty_raw.get(y)
+        ryp = rye_price.get(y)
+        ryv = _r(ryq * ryp * 10, 0) if (ryq is not None and ryp is not None) else None
+
+        # Barley export value: million bu × cents/bu × 10 = thousand USD
+        baq = barley_exp_qty_raw.get(y)
+        bap = barley_price.get(y)
+        bav = _r(baq * bap * 10, 0) if (baq is not None and bap is not None) else None
+
+        # Oats export value: million bu × cents/bu × 10 = thousand USD
+        oaq = oats_exp_qty_raw.get(y)
+        oap = oats_price.get(y)
+        oav = _r(oaq * oap * 10, 0) if (oaq is not None and oap is not None) else None
+
         # Corn export value: million bu × cents/bu × 10 = thousand USD
         cq = corn_exp_qty_raw.get(y)
         cp = corn_price.get(y)
         cv = _r(cq * cp * 10, 0) if (cq is not None and cp is not None) else None
 
-        # Pork export value: million lbs × cents/lb × 10 = thousand USD
-        # Using pork price converted: $/cwt → cents/lb = price * 100 / 100 = price ($/cwt)
-        # 1 cwt = 100 lbs; $/cwt * million lbs / 100 = million $ = × 1000 = thousand $
+        # Potatoes export value: qty (thousand MT) × price per MT
+        # price $/MT = (cents/bu / 100) / 0.027216
+        poq = potatoes_exp_qty.get(y)
+        pop_ = potatoes_price.get(y)
+        pov = _r(poq * (pop_ / 100) / 0.027216, 0) if (poq is not None and pop_ is not None) else None
+
+        # Sugar export value: qty (thousand short tons) × price ($/short ton)
+        suq = sugar_exp_qty_raw.get(y)
+        sup = sugar_price.get(y)
+        suv = _r(suq * sup * 1000, 0) if (suq is not None and sup is not None) else None
+
+        # Eggs export value: million doz × cents/doz × 10 = thousand USD
+        egq = eggs_exp_qty_raw.get(y)
+        egp = eggs_price.get(y)
+        egv = _r(egq * egp * 10, 0) if (egq is not None and egp is not None) else None
+
+        # Milk export value: million lbs × ($/cwt / 100) × 1000 = thousand USD
+        miq = milk_exp_qty_raw.get(y)
+        mip = milk_price.get(y)
+        miv = _r(miq * mip / 100 * 1000, 0) if (miq is not None and mip is not None) else None
+
+        # Cheese export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
+        chq = cheese_exp_qty_raw.get(y)
+        chp = cheese_price.get(y)
+        chv = _r(chq * chp / 100 * 1000, 0) if (chq is not None and chp is not None) else None
+
+        # Butter export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
+        buq = butter_exp_qty_raw.get(y)
+        bup = butter_price.get(y)
+        buv = _r(buq * bup / 100 * 1000, 0) if (buq is not None and bup is not None) else None
+
+        # Beef export value: qty (thousand MT) × $/cwt × 100 / 45.359 = thousand USD
+        bq = beef_exp_qty.get(y)
+        bp = beef_price.get(y)
+        bv = _r(bq * bp * 100 / 45.359, 0) if (bq is not None and bp is not None) else None
+
+        # Pork export value: million lbs × $/cwt / 100 × 1000 = thousand USD
         pq = pork_exp_qty_raw.get(y)
         pp = pork_price.get(y)
         pv = _r(pq * pp / 100 * 1000, 0) if (pq is not None and pp is not None) else None
 
-        # Beef export value (thousand MT × $/MT)
-        bq = beef_exp_qty.get(y)
-        bp = beef_price.get(y)
-        if bq is not None and bp is not None:
-            # bq in thousand MT; price $/MT = $/cwt * 100/45.359; value in thousand USD
-            bp_per_mt = bp * 100 / 45.359
-            bv = _r(bq * bp_per_mt, 0)
-        else:
-            bv = None
+        # Mutton export value: qty (thousand MT) × $/cwt × 100 / 45.359 = thousand USD
+        muq = mutton_exp_qty.get(y)
+        mup = mutton_price.get(y)
+        muv = _r(muq * mup * 100 / 45.359, 0) if (muq is not None and mup is not None) else None
+
+        # Poultry export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
+        plq = poultry_exp_qty_raw.get(y)
+        plp = poultry_price.get(y)
+        plv = _r(plq * plp / 100 * 1000, 0) if (plq is not None and plp is not None) else None
+
+        # Wine export value: qty (thousand MT) × estimated $500/MT = thousand USD
+        wiq = wine_exp_qty.get(y)
+        wiv = _r(wiq * 500, 0) if wiq is not None else None
+
+        # Tomatoes export value: qty (thousand MT) × price per MT
+        # price $/MT = $/short ton × 1.1023
+        toq = tomatoes_exp_qty.get(y)
+        top_ = tomatoes_price.get(y)
+        tov = _r(toq * top_ * 1.1023, 0) if (toq is not None and top_ is not None) else None
+
+        # Oranges export value: thousand boxes × $/box × 1 = thousand USD
+        orq = oranges_exp_qty_raw.get(y)
+        orp = oranges_price.get(y)
+        orv = _r(orq * orp, 0) if (orq is not None and orp is not None) else None
+
+        # Rice export value: million lbs × (cents/lb / 100) × 1000 = thousand USD
+        riq = rice_exp_qty_raw.get(y)
+        rip = rice_price.get(y)
+        riv = _r(riq * rip / 100 * 1000, 0) if (riq is not None and rip is not None) else None
 
         rows.append([
-            y, wv, None, None, None, cv, None, None, None, None, None, None,
-            bv, pv, None, None, None, None, None, None, None, None
+            y, wv, ryv, bav, oav, cv, pov, suv, egv, miv, chv, buv,
+            bv, pv, muv, plv, wiv, tov, orv, None, None, riv
         ])
     return rows
 
