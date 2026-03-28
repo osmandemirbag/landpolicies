@@ -1,0 +1,126 @@
+WEIMAR AGRICULTURAL ROLL CALL VOTES — VALIDATION REPORT
+======================================================================
+
+
+
+INDIVIDUAL VOTE DATA QUALITY:
+----------------------------------------------------------------------
+  vote_id=  1 n=  41 noise= 70.7% Sozialisierungsgesetz – Gesamtabstimmung
+  vote_id=  2 n=  30 noise= 13.3% Reichssiedlungsgesetz – Schlußabstimmung
+  vote_id=  3 n=  70 noise= 17.1% Gesetz über die Regelung der Landarbeiter-Verhältnisse – Sch
+  vote_id=  4 n=  90 noise= 16.7% Etat des Reichsministeriums für Ernährung und Landwirtschaft
+  vote_id=  5 n=  90 noise= 16.7% Gesetz über Maßnahmen gegen die Viehseuchen
+  vote_id=  6 n=  23 noise= 13.0% Zolltarifnovelle – Landwirtschaftliche Positionen
+  vote_id=  7 n=  58 noise= 27.6% Gesetzentwurf über die Erhöhung der Getreidezölle
+  vote_id=  8 n=  58 noise= 27.6% Antrag betreffend Aufhebung der Zwangswirtschaft für Getreid
+  vote_id=  9 n=  58 noise= 27.6% Gesetzentwurf über die Regelung des Verkehrs mit Milch
+  vote_id= 10 n= 118 noise= 17.8% Antrag KPD auf entschädigungslose Enteignung des Großgrundbe
+  vote_id= 11 n= 134 noise= 12.7% Haushalt des Reichsministeriums für Ernährung und Landwirtsc
+  vote_id= 12 n= 134 noise= 12.7% Mißtrauensantrag gegen den Reichsminister für Ernährung und 
+  vote_id= 13 n= 134 noise= 12.7% Zuckersteuergesetz – Schlußabstimmung
+  vote_id= 14 n= 114 noise= 17.5% Getreideumlaggesetz – namentliche Abstimmung
+  vote_id= 15 n= 363 noise= 12.9% Fleischbeschaugesetz – Novelle
+  vote_id= 16 n=  40 noise= 12.5% Antrag betreffend Notlage der Landwirtschaft
+  vote_id= 17 n=  44 noise= 11.4% Reichssiedlungsgesetz – Novelle – Schlußabstimmung
+  vote_id= 18 n= 188 noise= 13.3% Aufhebung der Getreideumlage – namentliche Abstimmung
+  vote_id= 19 n= 188 noise= 13.3% Gesetz über die Aufhebung der Fideikommisse – Schlußabstimmu
+  vote_id= 20 n=   1 noise=100.0% Getreidezollgesetz – Erhöhung der Agrarzölle
+  vote_id= 21 n= 357 noise= 17.9% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 22 n= 357 noise= 17.9% Viehseuchengesetz – Novelle
+  vote_id= 23 n=  35 noise=  5.7% Antrag betreffend Aufwertung landwirtschaftlicher Hypotheken
+  vote_id= 24 n=   1 noise=100.0% Zolltarifnovelle – Getreide und Viehpositionen
+  vote_id= 25 n=   1 noise=100.0% Gesetz über die Einfuhr landwirtschaftlicher Erzeugnisse
+  vote_id= 26 n=  30 noise=  0.0% Branntweinmonopolgesetz – Novelle
+  vote_id= 27 n=  30 noise=  0.0% Antrag auf Sicherung der Landwirtschaft gegen Hypothekenaufw
+  vote_id= 28 n= 158 noise= 16.5% Reichssiedlungsgesetz – Zweite Novelle
+  vote_id= 29 n= 158 noise= 16.5% Zuckersteuernovelle
+  vote_id= 30 n= 184 noise= 25.0% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 31 n= 184 noise= 25.0% Milchgesetz – Schlußabstimmung
+  vote_id= 32 n=  42 noise= 11.9% Verordnung über die Errichtung der Deutschen Rentenbank – Be
+  vote_id= 33 n=  42 noise= 11.9% Aufwertungsgesetz – landwirtschaftliche Hypotheken
+  vote_id= 34 n=  13 noise=  7.7% Zolltarifgesetz – Erhöhung der Agrarzölle – Gesamtabstimmung
+  vote_id= 35 n=   1 noise=100.0% Antrag DNVP auf Erhöhung der Getreidezölle
+  vote_id= 36 n=   4 noise= 25.0% Viehseuchengesetz – Novelle – Schlußabstimmung
+  vote_id= 37 n=   8 noise= 25.0% Aufwertung landwirtschaftlicher Hypotheken – Antrag
+  vote_id= 38 n=   1 noise=100.0% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 39 n=   4 noise=  0.0% Gesetz über den Verkehr mit Zucker
+  vote_id= 40 n=   1 noise=100.0% Getreidegesetz – Bewirtschaftung und Einfuhr
+  vote_id= 41 n=  21 noise=  9.5% Antrag auf Erleichterung der landwirtschaftlichen Kreditvers
+  vote_id= 42 n= 107 noise= 13.1% Zolltarifgesetz 1925 – Agrarzölle – Gesamtabstimmung
+  vote_id= 43 n= 107 noise= 13.1% Aufwertungsgesetz – Landwirtschaftliche Grundschulden
+  vote_id= 44 n= 107 noise= 13.1% Getreidezollgesetz – Erhöhung auf 5 RM Weizen / 5 RM Roggen
+  vote_id= 45 n= 107 noise= 13.1% Fleischbeschaugesetz – Novelle – Einfuhr von Gefrierfleisch
+  vote_id= 46 n= 107 noise= 13.1% Siedlungsgesetz – Novelle (dritte Novelle)
+  vote_id= 47 n= 107 noise= 13.1% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 48 n= 107 noise= 13.1% Antrag auf Aufhebung der Getreidezölle – SPD/KPD
+  vote_id= 49 n=  69 noise= 10.1% Einfuhrscheingesetz – Getreide
+  vote_id= 50 n=   1 noise=100.0% Zolländerungsgesetz – Butter- und Käsezoll
+  vote_id= 51 n=  62 noise=  3.2% Zuckerrübenpreis-Gesetz
+  vote_id= 52 n=  62 noise=  3.2% Branntweinmonopolgesetz – Novelle 1925
+  vote_id= 53 n=  82 noise=  6.1% Hypothekenbankgesetz – Novelle (landwirtschaftl. Hypotheken)
+  vote_id= 54 n=  58 noise= 13.8% Pachtkreditgesetz – Schlußabstimmung
+  vote_id= 55 n=  50 noise=  6.0% Antrag betreffend Notlage der ostdeutschen Landwirtschaft
+  vote_id= 56 n=  74 noise= 13.5% Zolltarifgesetz – Viehzölle – Einzelabstimmung
+  vote_id= 57 n=  74 noise= 13.5% Bodenreformgesetz – Antrag SPD/DDP
+  vote_id= 58 n=   3 noise= 33.3% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 59 n=   3 noise= 33.3% Handelsvertrag Deutschland-Spanien – Agrarzölle
+  vote_id= 60 n=  37 noise=  5.4% Antrag auf Einführung einer Getreidemonopolgesellschaft
+  vote_id= 61 n=  37 noise=  5.4% Zolltarif – Erhöhung der Butterzölle und Käsezölle
+  vote_id= 62 n=  50 noise= 10.0% Gesetz über die landwirtschaftliche Kreditversorgung (Renten
+  vote_id= 63 n=   1 noise=100.0% Handelsvertrag Deutschland-Polen – Agrarpositionen
+  vote_id= 64 n=   1 noise=100.0% Gesetz über die Einfuhr von Lebendvieh
+  vote_id= 65 n=   1 noise=100.0% Aufwertungsgesetz – landwirtschaftliche Hypotheken – Novelle
+  vote_id= 66 n=   1 noise=100.0% Zolltarifgesetz 1927 – Gesamtabstimmung (incl. Agrarzölle)
+  vote_id= 67 n=  81 noise= 23.5% Gesetz über Zucker und Zuckerwaren – Schlußabstimmung
+  vote_id= 68 n= 170 noise= 18.8% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 69 n=  81 noise= 23.5% Einfuhrscheingesetz – Novelle – Getreide
+  vote_id= 70 n=   6 noise=  0.0% Fleischbeschaugesetz – Novelle 1927
+  vote_id= 71 n=  11 noise= 27.3% Handelsvertrag Deutschland-Frankreich – Weinzölle
+  vote_id= 72 n=  11 noise= 27.3% Winzerkreditgesetz – Schlußabstimmung
+  vote_id= 73 n=   1 noise=  0.0% Antrag DNVP auf höhere Getreidezölle
+  vote_id= 74 n=   1 noise=  0.0% Haushalt 1928 – Ernährung und Landwirtschaft
+  vote_id= 75 n=   1 noise=  0.0% Tierschutzgesetz – Schlußabstimmung
+  vote_id= 76 n= 120 noise= 12.5% Zolländerungsgesetz – Agrarpositionen
+  vote_id= 77 n= 120 noise= 12.5% Gesetz über die Einfuhrscheine für Getreide – Novelle
+  vote_id= 78 n=  73 noise= 17.8% Antrag betreffend Osthilfe-Maßnahmen
+  vote_id= 79 n=  73 noise= 17.8% Gesetz über die Aufwertung landwirtschaftlicher Schulden
+  vote_id= 80 n=  73 noise= 17.8% Haushalt Reichsministerium für Ernährung und Landwirtschaft 
+  vote_id= 81 n=  26 noise= 26.9% Zolltarifgesetz – Fleisch- und Fettzölle – namentliche Absti
+  vote_id= 82 n=  26 noise= 26.9% Siedlungsgesetz – Novelle (vierte Novelle) – Schlußabstimmun
+  vote_id= 83 n=  26 noise= 26.9% Osthilfe-Gesetz – Gesamtabstimmung
+  vote_id= 84 n=  26 noise= 26.9% Branntweinmonopolgesetz – Novelle 1929
+  vote_id= 85 n=  26 noise= 26.9% Gesetz über den Absatz deutscher Butter
+  vote_id= 86 n=  18 noise= 61.1% Zolländerungsgesetz – Erhöhung Getreidezölle auf 7.50 RM
+  vote_id= 87 n=  18 noise= 61.1% Antrag KPD betreffend Getreidepreisregulierung
+  vote_id= 88 n=  18 noise= 61.1% Fleischbeschaugesetz – Einfuhr von Gefrierfleisch – Novelle
+  vote_id= 89 n=  18 noise= 61.1% Osthilfe – Zweites Osthilfegesetz – Schlußabstimmung
+  vote_id= 90 n=  75 noise= 34.7% Zolltarifnovelle 1930 – Agrarzölle – Gesamtabstimmung
+  vote_id= 91 n=  75 noise= 34.7% Gesetz über die Sicherung der landwirtschaftlichen Kreditver
+  vote_id= 92 n=   1 noise=100.0% Antrag NSDAP betreffend Bodenreform
+  vote_id= 93 n=   1 noise=100.0% Antrag auf Aufhebung der Notverordnung betreffend Agrarzölle
+  vote_id= 94 n=   1 noise=100.0% Zolländerungsgesetz – Erhöhung der Butter- und Getreidezölle
+  vote_id= 95 n=   1 noise=100.0% Osthilfe – Ergänzungsgesetz – Schlußabstimmung
+  vote_id= 96 n=  23 noise= 21.7% Haushalt Ernährung und Landwirtschaft 1931 – Mißtrauensantra
+  vote_id= 97 n= 261 noise= 18.4% Mißtrauensantrag gegen Reichsminister für Ernährung und Land
+  vote_id= 98 n= 261 noise= 18.4% Antrag Torgler u. Gen. betreffend Getreidebewirtschaftung, V
+  vote_id= 99 n= 261 noise= 18.4% Entschließung Stoecker/Torgler betreffend Verbilligung von F
+  vote_id=100 n= 261 noise= 18.4% Gesetzentwurf über die Einfuhr von Gefrierfleisch – Schlußab
+  vote_id=101 n= 261 noise= 18.4% Entschließung betreffend Verbilligung von Frischfleisch – Ge
+  vote_id=102 n=  23 noise= 21.7% Getreidepreisgesetz – Schlußabstimmung
+  vote_id=103 n=  23 noise= 21.7% Osthilfe – Agrarkredit – Notverordnung – namentliche Abstimm
+  vote_id=104 n=  23 noise= 21.7% Antrag DNVP auf Erhöhung der Getreidezölle
+  vote_id=105 n=  23 noise= 21.7% Milchgesetz – Novelle – Schlußabstimmung
+  vote_id=106 n=   1 noise=100.0% Zolltarifnovelle – Agrarpositionen (Erhöhung auf Butterimpor
+  vote_id=107 n=  45 noise=  8.9% Antrag auf Aufhebung der Notverordnung betreffend Agrarzölle
+  vote_id=108 n=  45 noise=  8.9% Siedlungsgesetz – Fünfte Novelle
+  vote_id=109 n=   1 noise=100.0% Antrag betreffend Agrarkrise und Osthilfe-Reform
+  vote_id=110 n=   1 noise=100.0% Haushalt Ernährung und Landwirtschaft 1932
+  vote_id=111 n=   1 noise=100.0% Gesetz über die Umschuldung landwirtschaftlicher Lieferanten
+  vote_id=112 n=   1 noise=100.0% Antrag auf Aufhebung der Notverordnung über Milch- und Fettw
+  vote_id=113 n=   1 noise=100.0% Siedlungsfrage und Osthilfe – Mißtrauensantrag
+  vote_id=114 n=  14 noise= 21.4% Antrag KPD/NSDAP auf Aufhebung der Notverordnung (u.a. Agrar
+  vote_id=115 n=  14 noise= 21.4% Mißtrauensantrag gegen die Regierung – agrarpolitischer Kont
+  vote_id=116 n=  14 noise= 21.4% Antrag NSDAP betreffend Aufhebung der Agrarzoll-Notverordnun
+  vote_id=117 n=  14 noise= 21.4% Gesetz über die Entschuldung der Landwirtschaft – Schlußabst
+  vote_id=118 n=  14 noise= 21.4% Osthilfe – Novelle – namentliche Abstimmung
+  vote_id=119 n=   1 noise=100.0% Ermächtigungsgesetz – landwirtschaftliche Ermächtigungen (Ag
