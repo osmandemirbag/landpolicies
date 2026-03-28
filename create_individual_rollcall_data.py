@@ -695,6 +695,66 @@ def parse_zusammenstellung_header(text):
     return vote_descs
 
 
+    # Words that are never MP names (OCR noise from headers, page text)
+NOISE_WORDS = {
+    "Reichstag", "Sitzung", "Dienstag", "Montag", "Mittwoch", "Donnerstag",
+    "Freitag", "Sonnabend", "Zusammenstellung", "Abstimmung", "Name",
+    "Abgegebene", "Stimmzettel", "Ungültig", "Bleiben", "Davon", "Summe",
+    "Druck", "Verlag", "Reichsdruckerei", "Namentliche", "Abstimmungen",
+    "Nationalversammlung", "Schlußabstimmung", "Gesamtabstimmung",
+    "Drucksachen", "Beratung", "Gesetzentwurf", "Antrag", "Entschließung",
+    "Genossen", "Ausschuß", "Volkswirtschaft", "Mißtrauensantrag",
+    "Mündlichen", "Berichts", "Beschlüsse", "Anträge", "Gesetz",
+    "Entwurfs", "Entwurf", "Novelle", "Erhöhung", "Aufhebung",
+    "Einfuhr", "Ausfuhr", "Haushalt", "Einzelplan", "Bevölkerung",
+    "Verbilligung", "Bewirtschaftung", "Vermahlung", "Brotherstellung",
+    "Brotberstellnng", "Brvthersteltnng", "Gefrierfleisch", "Frischfleisch",
+    "Getreidebewirtschaftung", "Getreide", "Siedlung", "Siedlungsgesetz",
+    "Osthilfe", "Landwirtschaft", "Ernährung", "Zolltarif", "Zolltarifgesetz",
+    "Zolländerungsgesetz", "Branntweinmonopol", "Viehseuchen", "Milch",
+    "Zucker", "Hypotheken", "Rentenbank", "Kreditversorgung", "Bodenreform",
+    "Hört", "Sehr", "Bravo", "Rufe", "Beifall", "Zuruf", "Abgeordneten",
+    "Vizepräsident", "Präsident", "Minister", "Reichsminister",
+    "Reichsininister", "Reichsverkehrsminister", "Reichskanzler",
+    "Meine", "Damen", "Herren", "Ich", "Wir", "Die", "Der", "Das", "Den",
+    "Dem", "Des", "Ein", "Eine", "Einer", "Eines", "Einem", "Einen",
+    "Und", "Oder", "Aber", "Auch", "Nur", "Noch", "Schon", "Dann",
+    "Diese", "Dieser", "Dieses", "Diesem", "Diesen", "Jene", "Jener",
+    "Nach", "Vor", "Bei", "Mit", "Von", "Aus", "Für", "Auf", "In",
+    "Über", "Unter", "Durch", "Gegen", "Ohne", "Zwischen", "Seit",
+    "Berlin", "Norddeutschen", "Buchdruckerei", "Verlagsanstalt",
+    "Wilhelmstraße", "März", "April", "Mai", "Juni", "Juli", "August",
+    "September", "Oktober", "November", "Dezember", "Januar", "Februar",
+    "Demobilisation", "Sozialisierung", "Sozialisierungsgesetz",
+}
+
+
+def is_plausible_mp_name(name):
+    """Check if a string looks like a plausible MP name (not OCR noise)."""
+    if not name or len(name) < 3:
+        return False
+    # Reject single common words
+    if name in NOISE_WORDS:
+        return False
+    # Reject if all parts are noise words
+    parts = name.split()
+    non_noise = [p for p in parts if p not in NOISE_WORDS and len(p) > 1]
+    if not non_noise:
+        return False
+    # Reject if it contains too many lowercase-starting words (sentence fragment)
+    if len(parts) > 3:
+        lc_count = sum(1 for p in parts if p[0].islower() and p not in ("von", "v.", "zu", "der", "den"))
+        if lc_count > len(parts) // 2:
+            return False
+    # Reject very long "names" (likely sentence fragments)
+    if len(name) > 60:
+        return False
+    # Reject names that are really numbers
+    if re.match(r"^\d+$", name):
+        return False
+    return True
+
+
 def parse_individual_votes_from_text(text, num_votes=1):
     """Parse individual MP votes from OCR text of Zusammenstellung pages.
 
@@ -709,15 +769,30 @@ def parse_individual_votes_from_text(text, num_votes=1):
     records = []
     current_party = ""
 
-    # Split on party headers
-    party_pattern = (
-        r"(?=Sozialdemokratische|Kommunistische|Zentrum(?:spartei|sfraktion)?\b|"
+    # Strip header text: everything before the first party header is
+    # description text (vote titles, session info). Only parse after
+    # the first party faction heading or "Name ... Abstimmung" table header.
+    party_header_re = (
+        r"(Sozialdemokratische|Kommunistische|Zentrum(?:spartei|sfraktion)?\b|"
         r"Bayerische\s+Volkspartei|Deutsche\s+Demokratische|Deutsche\s+Staatspartei|"
         r"Deutsche\s+Volkspartei|Deutschnationale|Nationalsozialisti|"
         r"Wirtschaftspartei|Reichspartei\s+des|Deutsches\s+Landvolk|"
         r"Landbund|Christlich-Nationale|Christlich-Sozialer|"
         r"Fraktionslos|Parteilos)"
     )
+    # Find the first party header
+    m = re.search(party_header_re, text)
+    if m:
+        text = text[m.start():]
+    else:
+        # No party header found — try "Name" column header
+        m2 = re.search(r"\bName\b.*\bAbstimmung\b", text[:500])
+        if m2:
+            text = text[m2.end():]
+        # If neither found, the text might not contain a vote list at all
+
+    # Split on party headers
+    party_pattern = r"(?=" + party_header_re + r")"
     sections = re.split(party_pattern, text)
 
     for section in sections:
@@ -730,8 +805,6 @@ def parse_individual_votes_from_text(text, num_votes=1):
             current_party = party
 
         # Extract name-vote pairs
-        # Strategy: find sequences where a name (capitalised words) is followed
-        # by vote values
         words = section.split()
         i = 0
         while i < len(words):
@@ -741,7 +814,7 @@ def parse_individual_votes_from_text(text, num_votes=1):
             if re.match(r"^\d{4}$", w):  # year/page number
                 i += 1
                 continue
-            if re.match(r"^(Reichstag|Sitzung|Dienstag|Montag|Mittwoch|Donnerstag|Freitag|Sonnabend|Zusammenstellung|Abstimmung|Name|Abgegebene|Stimmzettel|Ungültig|Bleiben|Davon|Summe|Druck|Verlag|Reichsdruckerei)$", w):
+            if w in NOISE_WORDS:
                 i += 1
                 continue
 
@@ -795,8 +868,8 @@ def parse_individual_votes_from_text(text, num_votes=1):
             name = re.sub(r"\s+", " ", name)
             name = re.sub(r"^\d+\s*", "", name)
 
-            # Filter out noise (too short, or looks like a header)
-            if name and len(name) > 2 and votes:
+            # Filter out noise
+            if name and votes and is_plausible_mp_name(name):
                 # Don't include party names as MP names
                 if not detect_party(name):
                     for v_idx, vote_val in enumerate(votes):
