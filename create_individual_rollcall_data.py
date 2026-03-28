@@ -631,14 +631,54 @@ def bsb_get_ocr(bsb_id, canvas):
 
 
 def find_zusammenstellung_canvases(bsb_id):
-    """Find canvas numbers of Zusammenstellung pages in a volume."""
+    """Find canvas numbers of Zusammenstellung pages in a volume.
+
+    The actual Zusammenstellung pages contain the heading
+    'Zusammenstellung der namentlichen Abstimmung(en)' followed by
+    a table of party faction headers and MP names with vote columns.
+
+    We validate by checking that the OCR text of candidate pages
+    actually contains party faction headers (SPD, DNVP, etc.) which
+    are a strong signal of being a real vote tally page.
+    """
     results = bsb_search(bsb_id, "Zusammenstellung namentlichen Abstimmung")
-    canvases = set()
+    candidates = set()
     for canvas, context in results:
         if canvas and canvas > 10:  # skip table of contents
             if "Zusammenstellung" in context:
-                canvases.add(canvas)
-    return sorted(canvases)
+                candidates.add(canvas)
+
+    if not candidates:
+        return []
+
+    # Validate candidates: check if at least one candidate page contains
+    # party faction headers (hallmark of a Zusammenstellung page)
+    party_patterns = [
+        "Sozialdemokrat", "Kommunist", "Zentrum", "Deutschnational",
+        "Deutsche Volkspartei", "Bayerische Volkspartei",
+        "Wirtschaftspartei", "Nationalsozial", "Landvolk", "Landbund",
+    ]
+
+    validated = set()
+    for canvas in sorted(candidates):
+        text = bsb_get_ocr(bsb_id, canvas)
+        if not text:
+            continue
+        time.sleep(API_DELAY)
+
+        # Check for party headers — strong signal of vote tally page
+        party_count = sum(1 for p in party_patterns if p.lower() in text.lower())
+        if party_count >= 2:
+            # This is a real Zusammenstellung page
+            validated.add(canvas)
+            # Also add adjacent pages (vote lists span multiple pages)
+            for offset in range(1, 5):
+                validated.add(canvas + offset)
+        elif "Name" in text and ("Abstimmung" in text or "Ja" in text):
+            # Might be a continuation page
+            validated.add(canvas)
+
+    return sorted(validated)
 
 
 # ─── Vote parsing ─────────────────────────────────────────────────────────
